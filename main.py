@@ -96,4 +96,29 @@ except Exception as e:
     print(f"\tException... {e}")
 
 # ----- Working with Files -----
-# Upload a test file.
+try:
+    print(
+        "\nConnection with SSL/TLS\n\tAttempting authenticated connection with login details..."
+    )
+    with FTP_TLS("ftp.dlptest.com", "dlpuser", "rNrKYTX9g7z3RgJRmxWuGHbeu") as ftp:
+        print(f"\tAttempting to upload test files.")
+
+        # Upload a test file.
+        # For text or binary file, always use `rb`
+        print(f"\tUploading text file...")
+        with open("text.txt", "rb") as text_file:
+            ftp.storlines(
+                "STOR text.txt", text_file
+            )  # 'storlines()' should not be used to transfer binary files
+
+        print(f"\tUploading image file...")
+        with open("cat_image.jpg", "rb") as image_file:
+            ftp.storbinary("STOR cat_image.jpg", image_file)
+
+        print(f"\tSuccessfully uploaded test files.")
+
+        print(f"\tGetting a list of new files...")
+        for name in ftp.nlst():
+            print(f"\t{name}")
+except Exception as e:
+    print(f"\tException... {e}")
